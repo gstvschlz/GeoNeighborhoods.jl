@@ -1,10 +1,12 @@
 #md # Sector schemes
 #md
-#md Sectors are assigned in the **rotated, radius-normalised frame** — the frame
-#md in which the ellipsoid is a unit sphere. Anisotropy and sector geometry
-#md therefore cannot disagree: rotating the search rotates the sectors with it.
+#md Sectors are assigned in the rotated, radius-normalized frame — the frame in
+#md which the ellipsoid is a unit sphere. Anisotropy and sector geometry
+#md therefore cannot disagree, and rotating the search rotates the sectors with
+#md it.
 #md
-#md Three schemes are available, and the choice matters more than it looks.
+#md Three schemes are available, and the choice between them carries more
+#md consequence than it appears to.
 
 using GeoNeighborhoods
 using Meshes: Point
@@ -15,8 +17,9 @@ block = Point(0.0, 0.0, 0.0)
 #-
 #md ## The schemes compared
 #md
-#md The same ellipsoid and the same budget of 24 samples, capped at two per
-#md sector. What differs is only how the neighbourhood is carved up.
+#md The comparison below holds the ellipsoid fixed, along with a budget of 24
+#md samples capped at two per sector. Only the way the neighborhood is
+#md subdivided changes.
 
 ball = (95, 95, 62)
 
@@ -38,16 +41,16 @@ printtable(
 )
 
 #-
-#md With `NoSectors()` there is only one sector, so `maxpersector=2` throttles
-#md the entire search to two samples. Per-sector quotas are only meaningful
-#md alongside a scheme that actually subdivides the neighbourhood.
+#md `NoSectors()` defines a single sector, so `maxpersector=2` throttled the
+#md entire search to two samples. Per-sector quotas are meaningful only
+#md alongside a scheme that actually subdivides the neighborhood.
 #md
-#md ## Azimuthal measures azimuth about the vertical
+#md ## Azimuthal sectors measure azimuth about the vertical
 #md
-#md This is the trap worth knowing. `Azimuthal(n)` divides the horizontal plane
-#md into wedges, so **every composite in a vertical hole shares one wedge**. Cap
-#md a sector and you cap the whole hole. Narrow the search onto a single hole
-#md and the effect is unmistakable:
+#md This behavior is the trap worth knowing. `Azimuthal(n)` divides the
+#md horizontal plane into wedges, so every composite in a vertical hole shares
+#md one wedge, and capping a sector caps the whole hole. Narrowing the search
+#md onto a single hole makes the effect unmistakable.
 
 tall = (30, 30, 60)   # reaches only the hole through the block
 
@@ -64,15 +67,15 @@ printtable(
 )
 
 #-
-#md `halves=true` splits each wedge by the sign of the third axis, and `Octants`
-#md splits by sign in all three. Either recovers the vertical resolution that
-#md plain `Azimuthal` cannot express.
+#md `halves=true` splits each wedge by the sign of the third axis, and
+#md `Octants` splits by sign in all three. Either scheme recovers the vertical
+#md resolution that plain `Azimuthal` cannot express.
 #md
 #md ## Rotation carries the sectors with it
 #md
 #md A sample sitting on the rotated major axis lands in the same sector
-#md regardless of the rotation, because the sector is measured after rotating
-#md into the ellipsoid frame.
+#md whatever the rotation, because the sector is measured after rotating into
+#md the ellipsoid frame.
 
 using Rotations: RotZ
 using Unitful: @u_str
@@ -84,5 +87,5 @@ for angle in (0, 30, 60)
   P = GeoNeighborhoods.localprojection(spec, u"m")
   along = RotZ(deg2rad(angle)) * SVector(60.0, 0.0, 0.0)
   println("rotation ", lpad(angle, 2), "°: octant ", sectorid(Octants(), P * along),
-    ", normalised distance ", fmt(norm(P * along)))
+    ", normalized distance ", fmt(norm(P * along)))
 end

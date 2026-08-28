@@ -1,9 +1,9 @@
 # Working with the existing kriging
 
 This package does not implement estimation. It decides which samples reach
-the model, and hands them to GeoStatsModels unchanged — so any model from
-that package works, and the numbers agree with the ecosystem's own
-`fitpredict` whenever the neighbourhood is not doing anything extra.
+the model and hands them to GeoStatsModels unchanged, so any model from that
+package works, and the numbers agree with the ecosystem's own `fitpredict`
+whenever the neighborhood does nothing extra.
 
 ```julia
 using GeoNeighborhoods
@@ -20,10 +20,11 @@ model = Kriging(SphericalVariogram(range=120.0u"m"))
 
 ## The same answer as `fitpredict`
 
-With no sectors and no quotas, the search is "every sample inside the
-ellipsoid, nearest first" — exactly what `KBallSearch` gives `fitpredict`.
-The ball below is small enough that everything inside it fits in the sample
-budget, so neither search has to break a tie, and the two must agree.
+With no sectors and no quotas, the search reduces to "every sample inside
+the ellipsoid, nearest first", which is exactly what `KBallSearch` supplies
+to `fitpredict`. The ball below is small enough that everything inside it
+fits within the sample budget, so neither search has to break a tie, and the
+two must agree.
 
 ```julia
 spec = SearchNeighborhood((30, 30, 30), maxsamples=60)
@@ -53,10 +54,11 @@ same missing blocks: true
 largest difference:  8.881784197001252e-16
 ```
 
-## What the neighbourhood is for
+## What the neighborhood is for
 
-Once the neighbourhood does something, the estimates diverge — which is the
-point. Same model, same variogram, same data.
+Once the neighborhood does something, the estimates diverge, which is the
+point. The model, the variogram, and the data are identical in both rows
+below.
 
 ```julia
 function estimates(search)
@@ -98,7 +100,7 @@ largest difference on shared blocks: 0.068
 
 `diagnostics=true` appends the search outcome to every location: which pass
 served it, how many samples and sectors it used, how many distinct values of
-the first category column it drew on, and why it stopped.
+the first category column it drew on, and why the search stopped.
 
 ```julia
 est = interpolate(samples, grid, model; search=declustered, vars=(:Au,), diagnostics=true)
@@ -131,7 +133,7 @@ block  Au     samples  sectors  holes  reason
 
 ## Refusing to interpolate
 
-A neighbourhood that cannot be satisfied leaves the block `missing` rather
+A neighborhood that cannot be satisfied leaves the block `missing` rather
 than estimating it from whatever happened to be nearby. The reason is
 recorded, so the gaps in a model can be explained.
 

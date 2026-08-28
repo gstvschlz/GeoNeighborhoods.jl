@@ -1,14 +1,16 @@
-# Why sector search
+# Why sector search matters
 
 A block estimate is only as good as the samples that inform it. Down-hole
 sampling is typically an order of magnitude denser than the spacing between
-holes, so a plain "nearest N samples" search collapses onto whichever hole
-happens to pass closest — a vertical string of correlated composites
-standing in for a three-dimensional neighbourhood.
+drillholes, so a plain "nearest N samples" search collapses onto whichever
+hole passes closest to the block. What reaches the estimator is then a
+vertical string of correlated composites standing in for a
+three-dimensional neighborhood.
 
-The data here is a 5 × 5 grid of vertical holes on 45 m centres, composited
-every 4 m, defined in [`drillholes.jl`](drillholes.jl). One hole passes
-within 4 m of the origin, which is where we estimate.
+The data below is synthetic: a 5 × 5 grid of vertical holes on 45 m
+centers, composited every 4 m, defined in [`drillholes.jl`](drillholes.jl).
+One hole passes within 4 m of the origin, and the origin is where every
+estimate in this document is made.
 
 ```julia
 using GeoNeighborhoods
@@ -28,9 +30,9 @@ holes:      25
 
 ## Nearest twelve
 
-The ellipsoid is 95 × 95 × 62 m, so it reaches four holes in every
-direction. Nothing about that shape is wrong — but with no further
-constraint, the twelve nearest composites all come from one hole.
+The ellipsoid measures 95 × 95 × 62 m, so it reaches four holes in every
+direction. Nothing about that shape is wrong. Under no further constraint,
+however, the twelve nearest composites all come from one hole.
 
 ```julia
 ball = (95, 95, 62)
@@ -49,10 +51,9 @@ by hole:  ["DH13" => 12]
 
 ## The same ellipsoid, with sectors and a per-hole cap
 
-`Octants()` splits the neighbourhood by the sign of each rotated
-coordinate, and the two quotas below say "at most two samples from any one
-octant, and at most three from any one hole". The search budget is
-unchanged at twelve samples.
+`Octants()` splits the neighborhood by the sign of each rotated coordinate.
+The two quotas below admit at most two samples from any one octant and at
+most three from any one hole. The search budget stays at twelve samples.
 
 ```julia
 sectored = NeighborhoodSearch(
@@ -76,10 +77,12 @@ accepted: 12
 by hole:  ["DH07" => 2, "DH08" => 3, "DH12" => 3, "DH13" => 3, "DH14" => 1]
 ```
 
-## Side by side
+## The two neighborhoods side by side
 
-Same data, same ellipsoid, same number of samples — a completely different
-neighbourhood.
+The table below reports the composition of each selection. Neither the
+data, the ellipsoid, nor the number of samples differs between the two
+rows — only the constraints do, and the neighborhoods they produce have
+nothing in common.
 
 ```julia
 printtable(
@@ -100,11 +103,11 @@ nearest 12          12       1      12                  1
 sectors + hole cap  12       5      3                   8
 ```
 
-## It changes the estimate, not just the sample list
+## The neighborhood changes the estimate, not merely the sample list
 
-Both neighbourhoods are handed to the same ordinary kriging model. The
-declustered neighbourhood pulls the estimate away from the single hole that
-dominated it.
+Both neighborhoods are handed to the same ordinary kriging model, with the
+same variogram and the same data. The declustered neighborhood pulls the
+estimate away from the one hole that had dominated it.
 
 ```julia
 using GeoStatsModels: Kriging

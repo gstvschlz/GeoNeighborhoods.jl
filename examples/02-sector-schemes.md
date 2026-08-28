@@ -1,10 +1,12 @@
 # Sector schemes
 
-Sectors are assigned in the **rotated, radius-normalised frame** — the frame
-in which the ellipsoid is a unit sphere. Anisotropy and sector geometry
-therefore cannot disagree: rotating the search rotates the sectors with it.
+Sectors are assigned in the rotated, radius-normalized frame — the frame in
+which the ellipsoid is a unit sphere. Anisotropy and sector geometry
+therefore cannot disagree, and rotating the search rotates the sectors with
+it.
 
-Three schemes are available, and the choice matters more than it looks.
+Three schemes are available, and the choice between them carries more
+consequence than it appears to.
 
 ```julia
 using GeoNeighborhoods
@@ -16,8 +18,9 @@ block = Point(0.0, 0.0, 0.0)
 
 ## The schemes compared
 
-The same ellipsoid and the same budget of 24 samples, capped at two per
-sector. What differs is only how the neighbourhood is carved up.
+The comparison below holds the ellipsoid fixed, along with a budget of 24
+samples capped at two per sector. Only the way the neighborhood is
+subdivided changes.
 
 ```julia
 ball = (95, 95, 62)
@@ -49,16 +52,16 @@ Azimuthal(8)               8        14       7      7
 Azimuthal(8, halves=true)  16       24       6      12
 ```
 
-With `NoSectors()` there is only one sector, so `maxpersector=2` throttles
-the entire search to two samples. Per-sector quotas are only meaningful
-alongside a scheme that actually subdivides the neighbourhood.
+`NoSectors()` defines a single sector, so `maxpersector=2` throttled the
+entire search to two samples. Per-sector quotas are meaningful only
+alongside a scheme that actually subdivides the neighborhood.
 
-## Azimuthal measures azimuth about the vertical
+## Azimuthal sectors measure azimuth about the vertical
 
-This is the trap worth knowing. `Azimuthal(n)` divides the horizontal plane
-into wedges, so **every composite in a vertical hole shares one wedge**. Cap
-a sector and you cap the whole hole. Narrow the search onto a single hole
-and the effect is unmistakable:
+This behavior is the trap worth knowing. `Azimuthal(n)` divides the
+horizontal plane into wedges, so every composite in a vertical hole shares
+one wedge, and capping a sector caps the whole hole. Narrowing the search
+onto a single hole makes the effect unmistakable.
 
 ```julia
 tall = (30, 30, 60)   # reaches only the hole through the block
@@ -84,15 +87,15 @@ Azimuthal(8, halves=true)  4        2                2
 Octants()                  4        2                2
 ```
 
-`halves=true` splits each wedge by the sign of the third axis, and `Octants`
-splits by sign in all three. Either recovers the vertical resolution that
-plain `Azimuthal` cannot express.
+`halves=true` splits each wedge by the sign of the third axis, and
+`Octants` splits by sign in all three. Either scheme recovers the vertical
+resolution that plain `Azimuthal` cannot express.
 
 ## Rotation carries the sectors with it
 
 A sample sitting on the rotated major axis lands in the same sector
-regardless of the rotation, because the sector is measured after rotating
-into the ellipsoid frame.
+whatever the rotation, because the sector is measured after rotating into
+the ellipsoid frame.
 
 ```julia
 using Rotations: RotZ
@@ -105,12 +108,12 @@ for angle in (0, 30, 60)
   P = GeoNeighborhoods.localprojection(spec, u"m")
   along = RotZ(deg2rad(angle)) * SVector(60.0, 0.0, 0.0)
   println("rotation ", lpad(angle, 2), "°: octant ", sectorid(Octants(), P * along),
-    ", normalised distance ", fmt(norm(P * along)))
+    ", normalized distance ", fmt(norm(P * along)))
 end
 ```
 
 ```
-rotation  0°: octant 1, normalised distance 0.6
-rotation 30°: octant 1, normalised distance 0.6
-rotation 60°: octant 1, normalised distance 0.6
+rotation  0°: octant 1, normalized distance 0.6
+rotation 30°: octant 1, normalized distance 0.6
+rotation 60°: octant 1, normalized distance 0.6
 ```

@@ -1,11 +1,11 @@
 #md # Multipass searches
 #md
-#md A single neighbourhood forces one compromise for the whole model: tight
-#md enough to be defensible near data, and every block further out goes
-#md uninterpolated. A `MultiPass` states the compromise explicitly instead —
-#md an ordered list of complete neighbourhoods, each with its own quotas and
-#md rejection rules. The first one whose constraints hold wins, and the output
-#md records which.
+#md A single neighborhood forces one compromise on the whole model: tight enough
+#md to be defensible near data, and every block further out goes uninterpolated.
+#md A `MultiPass` states the compromise explicitly instead. It holds an ordered
+#md list of complete neighborhoods, each with its own quotas and rejection
+#md rules, and the first one whose constraints hold serves the block. The output
+#md records which pass did so.
 
 using GeoNeighborhoods
 using Meshes: CartesianGrid, nelements
@@ -16,11 +16,11 @@ grid = CartesianGrid((-260.0, -260.0, -60.0), (260.0, 260.0, 60.0), dims=(13, 13
 println("blocks: ", nelements(grid))
 
 #-
-#md ## One neighbourhood at a time
+#md ## One neighborhood at a time
 #md
-#md Each of these on its own trades coverage against how well informed the
+#md Each neighborhood on its own trades coverage against how well informed the
 #md estimate is. The tight pass demands eight samples from at least four
-#md octants; the wide one asks for almost nothing.
+#md octants, whereas the wide pass asks for almost nothing.
 
 tight = SearchNeighborhood((35, 35, 35), sectors=Octants(), minsamples=8, minsectors=4)
 medium = SearchNeighborhood((70, 70, 55), sectors=Octants(), minsamples=5, minsectors=2)
@@ -41,7 +41,7 @@ function coverage(search)
 end
 
 printtable(
-  ["neighbourhood", "blocks estimated", "% of model", "mean samples used"],
+  ["neighborhood", "blocks estimated", "% of model", "mean samples used"],
   [
     ["tight", coverage(tight)...],
     ["medium", coverage(medium)...],
@@ -52,7 +52,7 @@ printtable(
 #-
 #md ## All three, in order
 #md
-#md Every block gets the tightest neighbourhood that can actually serve it.
+#md Every block now receives the tightest neighborhood able to serve it.
 
 passes = MultiPass(tight, medium, wide)
 est = interpolate(samples, grid, model; search=passes, vars=(:Au,), diagnostics=true)
@@ -72,7 +72,7 @@ println("estimated:     ", count(used), " of ", length(au))
 println("not estimated: ", count(ismissing, au))
 
 #-
-#md ## Why the blocks that stayed missing did
+#md ## Why the remaining blocks stayed missing
 #md
 #md With `diagnostics=true` every location carries the reason its search ended,
 #md so an unestimated block is explainable rather than mysterious.
@@ -84,10 +84,10 @@ printtable(
 )
 
 #-
-#md ## Relaxing one neighbourhood outwards
+#md ## Relaxing one neighborhood outwards
 #md
-#md When the passes differ only in size, `MultiPass(base, factors)` builds them,
-#md optionally relaxing the sample floor alongside the radii.
+#md When the passes differ only in size, `MultiPass(base, factors)` builds them
+#md and, on request, relaxes the sample floor alongside the radii.
 
 expanded = MultiPass(tight, (1, 2, 4), minsamples=(8, 5, 2))
 for (i, p) in enumerate(expanded)

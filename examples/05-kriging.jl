@@ -1,9 +1,9 @@
 #md # Working with the existing kriging
 #md
 #md This package does not implement estimation. It decides which samples reach
-#md the model, and hands them to GeoStatsModels unchanged — so any model from
-#md that package works, and the numbers agree with the ecosystem's own
-#md `fitpredict` whenever the neighbourhood is not doing anything extra.
+#md the model and hands them to GeoStatsModels unchanged, so any model from that
+#md package works, and the numbers agree with the ecosystem's own `fitpredict`
+#md whenever the neighborhood does nothing extra.
 
 using GeoNeighborhoods
 using GeoStatsModels: GeoStatsModels, Kriging
@@ -19,10 +19,11 @@ model = Kriging(SphericalVariogram(range=120.0u"m"))
 #-
 #md ## The same answer as `fitpredict`
 #md
-#md With no sectors and no quotas, the search is "every sample inside the
-#md ellipsoid, nearest first" — exactly what `KBallSearch` gives `fitpredict`.
-#md The ball below is small enough that everything inside it fits in the sample
-#md budget, so neither search has to break a tie, and the two must agree.
+#md With no sectors and no quotas, the search reduces to "every sample inside
+#md the ellipsoid, nearest first", which is exactly what `KBallSearch` supplies
+#md to `fitpredict`. The ball below is small enough that everything inside it
+#md fits within the sample budget, so neither search has to break a tie, and the
+#md two must agree.
 
 spec = SearchNeighborhood((30, 30, 30), maxsamples=60)
 
@@ -44,10 +45,11 @@ println("same missing blocks: ", ismissing.(a) == ismissing.(b))
 println("largest difference:  ", maximum(abs.(a[both] .- b[both])))
 
 #-
-#md ## What the neighbourhood is for
+#md ## What the neighborhood is for
 #md
-#md Once the neighbourhood does something, the estimates diverge — which is the
-#md point. Same model, same variogram, same data.
+#md Once the neighborhood does something, the estimates diverge, which is the
+#md point. The model, the variogram, and the data are identical in both rows
+#md below.
 
 function estimates(search)
   au = getproperty(values(interpolate(samples, grid, model; search, vars=(:Au,))), :Au)
@@ -79,7 +81,7 @@ println("largest difference on shared blocks: ", fmt(maximum(abs.(x[shared] .- y
 #md
 #md `diagnostics=true` appends the search outcome to every location: which pass
 #md served it, how many samples and sectors it used, how many distinct values of
-#md the first category column it drew on, and why it stopped.
+#md the first category column it drew on, and why the search stopped.
 
 est = interpolate(samples, grid, model; search=declustered, vars=(:Au,), diagnostics=true)
 tab = values(est)
@@ -98,7 +100,7 @@ printtable(
 #-
 #md ## Refusing to interpolate
 #md
-#md A neighbourhood that cannot be satisfied leaves the block `missing` rather
+#md A neighborhood that cannot be satisfied leaves the block `missing` rather
 #md than estimating it from whatever happened to be nearby. The reason is
 #md recorded, so the gaps in a model can be explained.
 

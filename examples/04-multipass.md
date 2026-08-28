@@ -1,11 +1,11 @@
 # Multipass searches
 
-A single neighbourhood forces one compromise for the whole model: tight
-enough to be defensible near data, and every block further out goes
-uninterpolated. A `MultiPass` states the compromise explicitly instead —
-an ordered list of complete neighbourhoods, each with its own quotas and
-rejection rules. The first one whose constraints hold wins, and the output
-records which.
+A single neighborhood forces one compromise on the whole model: tight enough
+to be defensible near data, and every block further out goes uninterpolated.
+A `MultiPass` states the compromise explicitly instead. It holds an ordered
+list of complete neighborhoods, each with its own quotas and rejection
+rules, and the first one whose constraints hold serves the block. The output
+records which pass did so.
 
 ```julia
 using GeoNeighborhoods
@@ -21,11 +21,11 @@ println("blocks: ", nelements(grid))
 blocks: 676
 ```
 
-## One neighbourhood at a time
+## One neighborhood at a time
 
-Each of these on its own trades coverage against how well informed the
+Each neighborhood on its own trades coverage against how well informed the
 estimate is. The tight pass demands eight samples from at least four
-octants; the wide one asks for almost nothing.
+octants, whereas the wide pass asks for almost nothing.
 
 ```julia
 tight = SearchNeighborhood((35, 35, 35), sectors=Octants(), minsamples=8, minsectors=4)
@@ -47,7 +47,7 @@ function coverage(search)
 end
 
 printtable(
-  ["neighbourhood", "blocks estimated", "% of model", "mean samples used"],
+  ["neighborhood", "blocks estimated", "% of model", "mean samples used"],
   [
     ["tight", coverage(tight)...],
     ["medium", coverage(medium)...],
@@ -57,16 +57,16 @@ printtable(
 ```
 
 ```
-neighbourhood  blocks estimated  % of model  mean samples used
--------------  ----------------  ----------  -----------------
-tight          36                5.3         21.6
-medium         232               34.3        21.1
-wide           468               69.2        23.4
+neighborhood  blocks estimated  % of model  mean samples used
+------------  ----------------  ----------  -----------------
+tight         36                5.3         21.6
+medium        232               34.3        21.1
+wide          468               69.2        23.4
 ```
 
 ## All three, in order
 
-Every block gets the tightest neighbourhood that can actually serve it.
+Every block now receives the tightest neighborhood able to serve it.
 
 ```julia
 passes = MultiPass(tight, medium, wide)
@@ -98,7 +98,7 @@ estimated:     468 of 676
 not estimated: 208
 ```
 
-## Why the blocks that stayed missing did
+## Why the remaining blocks stayed missing
 
 With `diagnostics=true` every location carries the reason its search ended,
 so an unestimated block is explainable rather than mysterious.
@@ -118,10 +118,10 @@ Accepted      468
 NoCandidates  208
 ```
 
-## Relaxing one neighbourhood outwards
+## Relaxing one neighborhood outwards
 
-When the passes differ only in size, `MultiPass(base, factors)` builds them,
-optionally relaxing the sample floor alongside the radii.
+When the passes differ only in size, `MultiPass(base, factors)` builds them
+and, on request, relaxes the sample floor alongside the radii.
 
 ```julia
 expanded = MultiPass(tight, (1, 2, 4), minsamples=(8, 5, 2))
