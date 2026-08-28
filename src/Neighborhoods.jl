@@ -19,14 +19,25 @@ replacing it.
 """
 module Neighborhoods
 
-using Meshes: MetricBall
+using Meshes: MetricBall, metric, BoundedNeighborSearchMethod, Point, Domain
+using Meshes: centroid, nelements, crs, lentype, embeddim, coords
+using GeoTables: domain
+import Meshes: maxneighbors, searchdists!
+
+using CoordRefSystems: CRS
+import CoordRefSystems
+
+using NearestNeighbors: BallTree, inrange
+import Tables
+
 using StaticArrays: SVector, SMatrix
-using LinearAlgebra: I, UniformScaling, Diagonal
-using Unitful: Unitful, @u_str, ustrip
+using LinearAlgebra: I, UniformScaling, Diagonal, norm
+using Unitful: Unitful, @u_str, ustrip, unit
 
 include("sectors.jl")
 include("constraints.jl")
 include("spec.jl")
+include("searcher.jl")
 
 export
   # sector schemes
@@ -44,6 +55,11 @@ export
 
   # neighbourhood specification
   SearchNeighborhood,
-  metricball
+  metricball,
+
+  # search
+  NeighborhoodSearch,
+  searchreport,
+  searchreport!
 
 end
