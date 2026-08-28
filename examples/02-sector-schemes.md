@@ -41,16 +41,17 @@ printtable(
 ```
 
 ```
-scheme                             sectors  samples  holes  sectors filled
----------------------------------  -------  -------  -----  --------------
-Neighborhoods.NoSectors()          1        2        1      1
-Neighborhoods.Octants()            8        16       4      8
-Neighborhoods.Azimuthal(8, false)  8        14       7      7
-Neighborhoods.Azimuthal(8, true)   16       24       6      12
+scheme                     sectors  samples  holes  sectors filled
+-------------------------  -------  -------  -----  --------------
+NoSectors()                1        2        1      1
+Octants()                  8        16       4      8
+Azimuthal(8)               8        14       7      7
+Azimuthal(8, halves=true)  16       24       6      12
 ```
 
-`NoSectors()` ignores the cap entirely — with one sector, "two per sector"
-would leave two samples, so the quota is simply not a useful control there.
+With `NoSectors()` there is only one sector, so `maxpersector=2` throttles
+the entire search to two samples. Per-sector quotas are only meaningful
+alongside a scheme that actually subdivides the neighbourhood.
 
 ## Azimuthal measures azimuth about the vertical
 
@@ -76,11 +77,11 @@ printtable(
 ```
 
 ```
-scheme                             samples  above the block  below
----------------------------------  -------  ---------------  -----
-Neighborhoods.Azimuthal(8, false)  2        1                1
-Neighborhoods.Azimuthal(8, true)   4        2                2
-Neighborhoods.Octants()            4        2                2
+scheme                     samples  above the block  below
+-------------------------  -------  ---------------  -----
+Azimuthal(8)               2        1                1
+Azimuthal(8, halves=true)  4        2                2
+Octants()                  4        2                2
 ```
 
 `halves=true` splits each wedge by the sign of the third axis, and `Octants`

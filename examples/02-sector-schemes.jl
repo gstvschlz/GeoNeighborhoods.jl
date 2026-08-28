@@ -38,8 +38,9 @@ printtable(
 )
 
 #-
-#md `NoSectors()` ignores the cap entirely — with one sector, "two per sector"
-#md would leave two samples, so the quota is simply not a useful control there.
+#md With `NoSectors()` there is only one sector, so `maxpersector=2` throttles
+#md the entire search to two samples. Per-sector quotas are only meaningful
+#md alongside a scheme that actually subdivides the neighbourhood.
 #md
 #md ## Azimuthal measures azimuth about the vertical
 #md
