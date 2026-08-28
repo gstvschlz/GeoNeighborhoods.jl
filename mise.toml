@@ -6,16 +6,25 @@ JULIA_PROJECT = "."
 
 [tasks.test]
 description = "Run the test suite"
+shell = "bash -c"
 run = "julia --project=. -e 'using Pkg; Pkg.test()'"
 
 [tasks.instantiate]
 description = "Resolve and install dependencies"
+shell = "bash -c"
 run = "julia --project=. -e 'using Pkg; Pkg.instantiate()'"
 
 [tasks.repl]
 description = "Start a REPL with the package environment"
+shell = "bash -c"
 run = "julia --project=. -i -e 'using GeoNeighborhoods'"
 
 [tasks.fmt]
 description = "Format sources with JuliaFormatter"
+shell = "bash -c"
 run = "julia --project=. -e 'using Pkg; Pkg.add(\"JuliaFormatter\"); using JuliaFormatter; format(\".\")'"
+
+[tasks.examples]
+description = "Regenerate the example documents from their scripts"
+shell = "bash -c"
+run = "julia --project=examples -e 'using Pkg; Pkg.develop(path=\".\"); Pkg.instantiate()' && julia --project=examples examples/generate.jl"
