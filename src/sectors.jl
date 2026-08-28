@@ -143,3 +143,8 @@ function _longestzerorun(c)
   end
   min(best, n)
 end
+
+Base.show(io::IO, ::NoSectors) = print(io, "NoSectors()")
+Base.show(io::IO, ::Octants) = print(io, "Octants()")
+Base.show(io::IO, s::Azimuthal) =
+  print(io, "Azimuthal(", s.n, s.halves ? ", halves=true" : "", ")")

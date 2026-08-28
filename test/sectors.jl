@@ -75,4 +75,11 @@
     @test consecutiveempty(Octants(), 3, [1, 1, 1, 1, 1, 1, 1, 1]) == 0
     @test consecutiveempty(NoSectors(), 3, [0]) == 1
   end
+
+  @testset "sector schemes print readably" begin
+    @test sprint(show, NoSectors()) == "NoSectors()"
+    @test sprint(show, Octants()) == "Octants()"
+    @test sprint(show, Azimuthal(8)) == "Azimuthal(8)"
+    @test sprint(show, Azimuthal(8, halves=true)) == "Azimuthal(8, halves=true)"
+  end
 end

@@ -10,7 +10,7 @@
 # run. Whatever the code prints follows it as an output block.
 #
 
-const SCRIPTS = ["01-why-sectors"]
+const SCRIPTS = ["01-why-sectors", "02-sector-schemes"]
 
 function capture(f)
   original = stdout

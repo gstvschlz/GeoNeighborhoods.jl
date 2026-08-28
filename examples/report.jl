@@ -1,5 +1,8 @@
 using Printf
 using Tables
+using CoordRefSystems: CoordRefSystems
+using GeoTables: domain
+using Meshes: centroid, coords
 
 "counts of accepted samples per value of `column`"
 function tally(data, indices, column)
@@ -30,3 +33,6 @@ end
 
 fmt(x::Real; digits=3) = string(round(x; digits))
 fmt(::Missing; digits=3) = "missing"
+
+"z coordinate of element `i`, for describing a selection above/below a block"
+_z(data, i) = CoordRefSystems.raw(coords(centroid(domain(data), i)))[3]

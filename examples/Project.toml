@@ -1,4 +1,8 @@
 [deps]
+CoordRefSystems = "b46f11dc-f210-4604-bfba-323c1ec968cb"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+Rotations = "6038ab10-8711-5258-84ad-4b1120ba62dc"
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 GeoStatsFunctions = "6771c435-bc22-4842-b0c3-41852a255103"
 GeoStatsModels = "ad987403-13c5-47b5-afee-0a48f6ac4f12"
 GeoTables = "e502b557-6362-48c1-8219-d30d308dcdb0"
