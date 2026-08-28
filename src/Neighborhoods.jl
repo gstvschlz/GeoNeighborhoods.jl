@@ -19,8 +19,14 @@ replacing it.
 """
 module Neighborhoods
 
+using Meshes: MetricBall
+using StaticArrays: SVector, SMatrix
+using LinearAlgebra: I, UniformScaling, Diagonal
+using Unitful: Unitful, @u_str, ustrip
+
 include("sectors.jl")
 include("constraints.jl")
+include("spec.jl")
 
 export
   # sector schemes
@@ -34,6 +40,10 @@ export
   # constraints
   HalfSpace,
   CategoryRule,
-  RejectReason
+  RejectReason,
+
+  # neighbourhood specification
+  SearchNeighborhood,
+  metricball
 
 end
