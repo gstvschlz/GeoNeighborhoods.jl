@@ -1,0 +1,39 @@
+name = "Neighborhoods"
+uuid = "3892b69f-dacf-49f0-8e11-8ce0c1a093e5"
+authors = ["Gustavo Pretto Scholze <scholzegustavo@gmail.com>"]
+version = "0.1.0-DEV"
+
+[deps]
+CoordRefSystems = "b46f11dc-f210-4604-bfba-323c1ec968cb"
+Distances = "b4f34e82-e78d-54a5-968a-f98e89d6e8f7"
+GeoStatsBase = "323cb8eb-fbf6-51c0-afd0-f8fba70507b2"
+GeoStatsModels = "ad987403-13c5-47b5-afee-0a48f6ac4f12"
+GeoTables = "e502b557-6362-48c1-8219-d30d308dcdb0"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+Meshes = "eacbb407-ea5a-433e-ab97-5258b1ca43fa"
+NearestNeighbors = "b8a86587-4115-5ab1-83bc-aa920d37bbce"
+Rotations = "6038ab10-8711-5258-84ad-4b1120ba62dc"
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
+Tables = "bd369af6-aec1-5ad0-b16a-f7cc5008161c"
+Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
+
+[compat]
+CoordRefSystems = "0.20"
+Distances = "0.10"
+GeoStatsBase = "0.49"
+GeoStatsModels = "0.13"
+GeoTables = "1.25"
+LinearAlgebra = "1.10"
+Meshes = "0.58"
+NearestNeighbors = "0.4"
+Rotations = "1.6"
+StaticArrays = "1.8"
+Tables = "1.10"
+Unitful = "1.11"
+julia = "1.10"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
