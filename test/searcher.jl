@@ -167,6 +167,29 @@
     @test all(==("EAST"), keys(tally(data, r.indices, :ROCK)))
   end
 
+  @testset "reports describe what was assembled" begin
+    s = SearchNeighborhood(
+      (95, 95, 62), sectors=Octants(), maxsamples=12, maxpersector=2,
+      category=CategoryRule(:BHID, maxper=3)
+    )
+    r = searchreport(origin, NeighborhoodSearch(data, s))
+    @test r.nsectors == length(_counts([
+      sectorid(Octants(), localprojection(s, u"m") * SVector(_xyz(data, i)...)) for i in r.indices
+    ]))
+    @test r.ndistinct == length(tally(data, r.indices, :BHID))
+
+    # a rejected search still explains what it managed to gather
+    strict = SearchNeighborhood((30, 30, 30), sectors=Octants(), minsectors=8)
+    r = searchreport(origin, NeighborhoodSearch(data, strict))
+    @test r.reason == Neighborhoods.TooFewSectors
+    @test isempty(r.indices)
+    @test 0 < r.nsectors < 8
+
+    # no category rules means nothing to count
+    plain = searchreport(origin, NeighborhoodSearch(data, SearchNeighborhood((30, 30, 30))))
+    @test plain.ndistinct == 0
+  end
+
   @testset "construction errors" begin
     # a 2D neighbourhood cannot search 3D data
     @test_throws ArgumentError NeighborhoodSearch(data, SearchNeighborhood((10, 10)))

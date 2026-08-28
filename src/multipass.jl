@@ -120,8 +120,8 @@ function searchreport!(neighbors, distances, pₒ::Point, m::MultiPassSearch; ma
   outcome = _report(0, NoCandidates, length(m.searches))
   for (p, s) in enumerate(m.searches)
     r = searchreport!(neighbors, distances, pₒ, s; mask, blockvals)
-    r.reason == Accepted && return _report(r.n, r.reason, p)
-    outcome = _report(0, r.reason, p)
+    r.reason == Accepted && return _report(r.n, r.reason, p, r.nsectors, r.ndistinct)
+    outcome = _report(0, r.reason, p, r.nsectors, r.ndistinct)
   end
   # the widest pass gives the most informative failure
   outcome

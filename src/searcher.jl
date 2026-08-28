@@ -82,15 +82,24 @@ function searchdists!(neighbors, distances, pₒ::Point, m::NeighborhoodSearch; 
 end
 
 """a search outcome: how many neighbours, why it stopped, and which pass produced it"""
-_report(n, reason, pass=1) = (; n, reason, pass)
+_report(n, reason, pass=1, nsectors=0, ndistinct=0) = (; n, reason, pass, nsectors, ndistinct)
 
 """
     searchreport!(neighbors, distances, pₒ, method; mask=nothing, blockvals=nothing)
 
 Like `Meshes.searchdists!`, but returns a named tuple `(; n, reason, pass)`
-describing how the search ended. A `reason` other than `Accepted` always comes
-with `n == 0`. `pass` is which [`MultiPass`](@ref) pass produced the selection,
-and is always `1` for a single neighbourhood.
+describing how the search ended:
+
+- `n` — how many neighbours were accepted; always `0` unless `reason` is `Accepted`.
+- `reason` — see [`RejectReason`](@ref).
+- `pass` — which [`MultiPass`](@ref) pass produced this, always `1` for a single
+  neighbourhood.
+- `nsectors` — how many sectors reached `minpersector`.
+- `ndistinct` — how many distinct values of the **first** [`CategoryRule`](@ref)
+  column were drawn, or `0` when there are no category rules.
+
+`nsectors` and `ndistinct` describe what was assembled even when a rule then
+rejected it, which is what makes a refusal explainable.
 
 `blockvals` supplies the estimated location's own category values, as a tuple
 aligned with the specification's `category` rules. It is required when any rule
@@ -151,37 +160,40 @@ function searchreport!(
     _tally!(m, s, tallies, keep[k])
   end
 
+  # what was actually assembled, reported whether or not it is accepted
+  nfilled = count(≥(s.minpersector), seccount)
+  ndistinct = isempty(tallies) ? 0 : count(>(0), values(first(tallies)))
+  reject(reason) = _report(0, reason, 1, nfilled, ndistinct)
+
   # rejection rules
-  taken < s.minsamples && return _report(0, TooFewSamples)
-  if s.minsectors > 0
-    count(≥(s.minpersector), seccount) < s.minsectors && return _report(0, TooFewSectors)
-  end
+  taken < s.minsamples && return reject(TooFewSamples)
+  s.minsectors > 0 && nfilled < s.minsectors && return reject(TooFewSectors)
   if s.maxemptyconsecutive ≠ UNBOUNDED
     consecutiveempty(s.sectors, Dim, seccount) > s.maxemptyconsecutive &&
-      return _report(0, EmptySectorRun)
+      return reject(EmptySectorRun)
   end
   if !isnothing(s.split)
-    (sidecount[1] == 0 || sidecount[2] == 0) && return _report(0, HalfSpaceEmpty)
+    (sidecount[1] == 0 || sidecount[2] == 0) && return reject(HalfSpaceEmpty)
   end
   for (r, rule) in enumerate(s.category)
-    satisfied(rule, tallies[r]) || return _report(0, CategoryUnmet)
+    satisfied(rule, tallies[r]) || return reject(CategoryUnmet)
   end
 
-  _report(taken, Accepted)
+  _report(taken, Accepted, 1, nfilled, ndistinct)
 end
 
 """
     searchreport(pₒ, method; mask=nothing, blockvals=nothing)
 
 Allocating form of [`searchreport!`](@ref): returns a named tuple
-`(; indices, distances, reason, pass)`.
+`(; indices, distances, reason, pass, nsectors, ndistinct)`.
 """
 function searchreport(pₒ::Point, m::BoundedNeighborSearchMethod; kwargs...)
   k = maxneighbors(m)
   neighbors = Vector{Int}(undef, k)
   distances = Vector{typeof(one(Float64) * _lenunit(m))}(undef, k)
   r = searchreport!(neighbors, distances, pₒ, m; kwargs...)
-  (; indices=view(neighbors, 1:r.n), distances=view(distances, 1:r.n), r.reason, r.pass)
+  (; indices=view(neighbors, 1:r.n), distances=view(distances, 1:r.n), r.reason, r.pass, r.nsectors, r.ndistinct)
 end
 
 _lenunit(m::NeighborhoodSearch) = m.unit
