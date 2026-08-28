@@ -28,8 +28,6 @@ export
   Octants,
   Azimuthal,
   nsectors,
-  sectorid,
-  sectorgroups,
-  consecutiveempty
+  sectorid
 
 end
