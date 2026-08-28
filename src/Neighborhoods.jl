@@ -20,6 +20,7 @@ replacing it.
 module Neighborhoods
 
 include("sectors.jl")
+include("constraints.jl")
 
 export
   # sector schemes
@@ -28,6 +29,11 @@ export
   Octants,
   Azimuthal,
   nsectors,
-  sectorid
+  sectorid,
+
+  # constraints
+  HalfSpace,
+  CategoryRule,
+  RejectReason
 
 end
