@@ -15,8 +15,7 @@ so it composes with the existing estimation machinery instead of
 replacing it.
 
 !!! warning "Pre-release"
-    Under active implementation, following the design in
-    `docs/superpowers/specs/2026-08-28-neighborhoods-jl-design.md`.
+    Under active implementation; the public API is still settling.
 """
 module Neighborhoods
 

@@ -5,10 +5,9 @@ ecosystem — anisotropic ellipsoids, angular sectors, sample quotas per sector
 and per drillhole, half-space balancing, and multipass searches.
 
 > [!WARNING]
-> **Pre-release.** The design is settled and documented in
-> [`docs/superpowers/specs`](docs/superpowers/specs/2026-08-28-neighborhoods-jl-design.md);
-> the implementation has not landed yet. Every API shown below is the target,
-> not a promise about today's `main`.
+> **Pre-release.** The design is settled and the implementation is landing
+> incrementally. Every API shown below is the target, not a promise about
+> today's `main`.
 
 ## Why
 

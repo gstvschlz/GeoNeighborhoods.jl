@@ -5,3 +5,6 @@ Manifest.toml
 *.jl.*.cov
 *.jl.mem
 .DS_Store
+
+# design notes are kept out of the published repository
+/docs/superpowers/
