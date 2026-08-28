@@ -4,10 +4,10 @@ Mining-style search neighbourhoods for the [GeoStats.jl](https://github.com/Juli
 ecosystem — anisotropic ellipsoids, angular sectors, sample quotas per sector
 and per drillhole, half-space balancing, and multipass searches.
 
-> [!WARNING]
-> **Pre-release.** The design is settled and the implementation is landing
-> incrementally. Every API shown below is the target, not a promise about
-> today's `main`.
+> [!NOTE]
+> Working but unregistered, and the API may still move. Everything shown below
+> is executed on every change: the tables are real output, produced by the
+> scripts in [`examples/`](examples/).
 
 ## Why
 
@@ -17,44 +17,45 @@ holes, so a plain "nearest N samples" search collapses onto whichever hole
 happens to pass closest — a vertical string of correlated composites standing in
 for a three-dimensional neighbourhood.
 
-![Nearest-N versus sector search](assets/why-sector-search.svg)
+Twelve samples, one ellipsoid of 95 × 95 × 62 m, a 5 × 5 grid of vertical holes
+on 45 m centres:
 
-Both panels use the same data and the same search ellipsoid. On the left, all
-twelve samples come from one hole. On the right, sector and per-hole quotas
-spread the same budget across four holes and six sectors. The estimate on the
-right carries information about the block; the one on the left mostly carries
-information about a single drillhole.
-
-## Sectors
-
-Sectors are measured in the **rotated, radius-normalised frame**, so anisotropy
-and sector geometry never disagree. Two conventions are available:
-
-![Octants and azimuthal sectors](assets/sectors.svg)
-
-```julia
-sectors = Octants()        # sign of the rotated coordinates: 4 in 2D, 8 in 3D
-sectors = Azimuthal(12)    # any number of wedges around the principal axis
+```
+search              samples  holes  most from one hole  octants filled
+------------------  -------  -----  ------------------  --------------
+nearest 12          12       1      12                  1
+sectors + hole cap  12       5      3                   8
 ```
 
-## Multipass
+Same data, same ellipsoid, same sample budget — a completely different
+neighbourhood, and a different answer from the same kriging model:
 
-Each pass is a complete neighbourhood in its own right, not just a scaled
-radius. The first pass whose constraints are satisfied wins, and the output
-records which one fired.
-
-![Multipass search](assets/multipass.svg)
-
-```julia
-search = MultiPass([
-  SearchNeighborhood(radii=( 60, 26, 18), minsamples=8, maxsamples=16, sectors=Octants()),
-  SearchNeighborhood(radii=(110, 48, 30), minsamples=5, maxsamples=16, sectors=Octants()),
-  SearchNeighborhood(radii=(180, 78, 45), minsamples=2, maxsamples=16),
-])
+```
+search              Au estimate
+------------------  -----------
+nearest 12          1.516
+sectors + hole cap  1.501
 ```
 
-A block that no pass can inform is left `missing` rather than being filled with
-a number nobody can defend.
+[Full example →](examples/01-why-sectors.md)
+
+## It works with the kriging you already have
+
+Kriging never sees the neighbourhood; it receives a subset of samples and
+solves. This package changes *which samples go in*, and nothing else — so with
+the constraints switched off it reproduces the ecosystem's own `fitpredict`:
+
+```
+blocks:              144
+estimated by both:   144
+same missing blocks: true
+largest difference:  8.881784197001252e-16
+```
+
+[Full example →](examples/05-kriging.md)
+
+`NeighborhoodSearch` is a `Meshes.BoundedNeighborSearchMethod`, so it also drops
+into anything else in the ecosystem that accepts a searcher.
 
 ## Defining a neighbourhood
 
@@ -63,7 +64,7 @@ using Neighborhoods
 using GeoStatsBase: GslibAngles
 
 search = SearchNeighborhood(
-  radii    = (100, 50, 20),          # semi-axes of the ellipsoid
+  (100, 50, 20),                     # semi-axes of the ellipsoid
   rotation = GslibAngles(30, 0, 0),  # or Datamine / Vulcan / Minesight / Rotations.jl
 
   sectors      = Octants(),
@@ -82,39 +83,78 @@ search = SearchNeighborhood(
 )
 ```
 
-Category rules also cover hard domain boundaries and explicit per-value quotas:
+Sectors are measured in the **rotated, radius-normalised frame**, so anisotropy
+and sector geometry can never disagree. Two conventions are available —
+`Octants()` splits by the sign of each rotated coordinate, `Azimuthal(n)` cuts
+`n` wedges about the vertical, optionally halved above and below.
+[How they differ →](examples/02-sector-schemes.md)
+
+Category rules cover caps per hole, minimum distinct holes, hard domain
+boundaries and explicit per-value quotas:
 
 ```julia
 category = [
   CategoryRule(:BHID, maxper=3, mindistinct=2),
-  CategoryRule(:ROCK, match=:block),                    # only samples in the block's own domain
+  CategoryRule(:ROCK, match=:block),                  # only samples in the block's own domain
   CategoryRule(:ZONE, quotas=Dict("A" => 2:6, "B" => 0:4)),
 ]
 ```
 
-## It works with the kriging you already have
+[What each one does →](examples/03-category-rules.md)
 
-Kriging never sees the neighbourhood — it receives a subset of samples and
-solves. So this package changes *which samples go in*, and nothing else:
-
-```julia
-using GeoStats, Neighborhoods
-
-model = Kriging(SphericalVariogram(range=120.0))
-
-estimate = interpolate(samples, blocks, model; search)
-```
-
-`NeighborhoodSearch` is a `Meshes.BoundedNeighborSearchMethod`, so it also drops
-into anything else in the ecosystem that accepts a searcher.
-
-Every estimate can carry its own audit trail — which pass fired, how many
-samples and sectors were used, and why a block was skipped:
+## Estimating
 
 ```julia
-estimate = interpolate(samples, blocks, model; search, diagnostics=true)
-# ⇒ variables + :pass, :nsamples, :nsectors, :ncategories, :reject
+using GeoStatsModels: Kriging
+using GeoStatsFunctions: SphericalVariogram
+
+model = Kriging(SphericalVariogram(range=120.0u"m"))
+estimate = interpolate(samples, blocks, model; search, vars=(:Au,))
 ```
+
+A location no neighbourhood can serve is left `missing` rather than filled with
+a number nobody can defend. With `diagnostics=true` every location also carries
+the reason:
+
+```
+block  Au     samples  sectors  holes  reason
+-----  -----  -------  -------  -----  --------
+1      1.438  12       8        4      Accepted
+2      1.539  12       8        4      Accepted
+```
+
+```
+outcome        blocks
+-------------  ------
+TooFewSectors  100
+Accepted       44
+```
+
+## Multipass
+
+Each pass is a complete neighbourhood, not merely a wider radius. The first
+whose constraints hold wins, and the output records which:
+
+```julia
+search = MultiPass(
+  SearchNeighborhood(( 35,  35, 35), sectors=Octants(), minsamples=8, minsectors=4),
+  SearchNeighborhood(( 70,  70, 55), sectors=Octants(), minsamples=5, minsectors=2),
+  SearchNeighborhood((140, 140, 90), minsamples=2),
+)
+```
+
+```
+pass  blocks  % of model
+----  ------  ----------
+1     36      5.3
+2     196     29.0
+3     236     34.9
+
+estimated:     468 of 676
+not estimated: 208
+```
+
+[Full example →](examples/04-multipass.md)
 
 ## Install
 
@@ -134,10 +174,10 @@ mise run instantiate
 mise run test
 ```
 
-The README figures are generated, not drawn — regenerate them with:
+To regenerate the examples after changing the library:
 
 ```bash
-julia assets/make_figures.jl
+julia --project=examples examples/generate.jl
 ```
 
 ## License
