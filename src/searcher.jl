@@ -113,12 +113,11 @@ function searchreport!(
   s = m.spec
   x = _svec(convert(C, coords(pₒ)))
 
-  # every sample inside the ellipsoid: the Mahalanobis metric makes its
-  # interior the unit ball, so a radius of one is the whole neighbourhood
+  # the Mahalanobis metric makes the ellipsoid interior the unit ball, so a
+  # radius of one is the whole neighbourhood
   cand = inrange(m.tree, x, one(T))
   isempty(cand) && return _report(0, NoCandidates)
 
-  # keep what survives the mask and hard domain matching, and describe it
   keep = Int[]
   dists = T[]
   secs = Int[]
@@ -135,7 +134,6 @@ function searchreport!(
   end
   isempty(keep) && return _report(0, NoCandidates)
 
-  # greedy fill in ascending distance, skipping whatever is already full
   nsec = nsectors(s)
   seccount = zeros(Int, nsec)
   sidecount = zeros(Int, 2)
@@ -157,12 +155,11 @@ function searchreport!(
     _tally!(m, s, tallies, keep[k])
   end
 
-  # what was actually assembled, reported whether or not it is accepted
+  # reported whether or not a rule then rejects the selection
   nfilled = count(≥(s.minpersector), seccount)
   ndistinct = isempty(tallies) ? 0 : count(>(0), values(first(tallies)))
   reject(reason) = _report(0, reason, 1, nfilled, ndistinct)
 
-  # rejection rules
   taken < s.minsamples && return reject(TooFewSamples)
   s.minsectors > 0 && nfilled < s.minsectors && return reject(TooFewSectors)
   if s.maxemptyconsecutive ≠ UNBOUNDED
@@ -194,8 +191,6 @@ function searchreport(pₒ::Point, m::BoundedNeighborSearchMethod; kwargs...)
 end
 
 _lenunit(m::NeighborhoodSearch) = m.unit
-
-# ---------------------------------------------------------------- helpers
 
 # same convention as Meshes' internal svec: plain numbers in the CRS units
 _svec(p::Point) = _svec(coords(p))

@@ -132,7 +132,7 @@ function _longestzerorun(c)
   all(iszero, c) && return n
   best = 0
   run = 0
-  # two laps so a run spanning the wrap point is counted once, in full
+  # two laps, so a run spanning the wrap point is counted once and in full
   @inbounds for i in 1:(2n)
     if iszero(c[mod1(i, n)])
       run += 1

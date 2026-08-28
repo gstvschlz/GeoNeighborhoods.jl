@@ -103,14 +103,12 @@ function interpolate(data, target, model; search, vars=nothing, point=true, prob
     end
   end
 
-  # narrow Vector{Any} to whatever the predictions actually are
+  # narrow Vector{Any} to whatever the predictions actually turned out to be
   estimated = (; zip(names, map(c -> map(identity, c), columns))...)
   table = diagnostics ? merge(estimated, (; pass, nsamples, nsectors, ndistinct, reject)) : estimated
 
   georef(table, dom)
 end
-
-# ---------------------------------------------------------------- helpers
 
 function _variables(data, vars)
   cols = Tables.columns(values(data))
