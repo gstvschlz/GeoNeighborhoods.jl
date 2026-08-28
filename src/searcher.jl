@@ -30,7 +30,7 @@ end
 function NeighborhoodSearch(data, spec::SearchNeighborhood{Dim}) where {Dim}
   dom = _domainof(data)
   embeddim(dom) == Dim ||
-    throw(ArgumentError("neighbourhood is $(Dim)D but the data is $(embeddim(dom))D"))
+    throw(ArgumentError("neighborhood is $(Dim)D but the data is $(embeddim(dom))D"))
 
   C = crs(dom)
   u = unit(lentype(C))
@@ -89,7 +89,7 @@ describing how the search ended:
 - `n` — how many neighbours were accepted; always `0` unless `reason` is `Accepted`.
 - `reason` — see [`RejectReason`](@ref).
 - `pass` — which [`MultiPass`](@ref) pass produced this, always `1` for a single
-  neighbourhood.
+  neighborhood.
 - `nsectors` — how many sectors reached `minpersector`.
 - `ndistinct` — how many distinct values of the **first** [`CategoryRule`](@ref)
   column were drawn, or `0` when there are no category rules.
@@ -114,7 +114,7 @@ function searchreport!(
   x = _svec(convert(C, coords(pₒ)))
 
   # the Mahalanobis metric makes the ellipsoid interior the unit ball, so a
-  # radius of one is the whole neighbourhood
+  # radius of one is the whole neighborhood
   cand = inrange(m.tree, x, one(T))
   isempty(cand) && return _report(0, NoCandidates)
 

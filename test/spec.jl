@@ -2,7 +2,7 @@
   @testset "construction" begin
     s = SearchNeighborhood((100, 50, 20))
     @test ndims(s) == 3
-    @test s.radii == (100.0u"m", 50.0u"m", 20.0u"m")   # plain numbers mean metres
+    @test s.radii == (100.0u"m", 50.0u"m", 20.0u"m")   # plain numbers mean meters
     @test s.sectors === NoSectors()
     @test nsectors(s) == 1
     @test s.minsamples == 1

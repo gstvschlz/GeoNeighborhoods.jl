@@ -32,7 +32,7 @@
     @test all(isapprox.(a[both], b[both], rtol=1e-6))
   end
 
-  @testset "the neighbourhood changes the answer" begin
+  @testset "the neighborhood changes the answer" begin
     ball = (95, 95, 62)
     plain = interpolate(data, grid, model; search=SearchNeighborhood(ball, maxsamples=12), vars=(:Au,))
     spread = interpolate(

@@ -1,7 +1,7 @@
 """
     RejectReason
 
-Why a neighbourhood search declined to produce a sample set. `Accepted` means
+Why a neighborhood search declined to produce a sample set. `Accepted` means
 it did not. Reported per location when diagnostics are requested, so that a
 block left `missing` can be explained rather than guessed at.
 """
@@ -18,7 +18,7 @@ end
 """
     HalfSpace(normal)
 
-Split the ellipsoid with the plane through the block centre whose normal is
+Split the ellipsoid with the plane through the block center whose normal is
 `normal`, and require samples on both sides. A block informed entirely from one
 side is not interpolated.
 

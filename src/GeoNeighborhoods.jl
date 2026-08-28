@@ -52,7 +52,7 @@ export
   CategoryRule,
   RejectReason,
 
-  # neighbourhood specification
+  # neighborhood specification
   SearchNeighborhood,
   metricball,
 

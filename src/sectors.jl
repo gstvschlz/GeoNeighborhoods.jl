@@ -3,7 +3,7 @@
 
 How the search ellipsoid is divided into angular sectors.
 
-Sectors are always assigned in the *rotated, radius-normalised* frame — the
+Sectors are always assigned in the *rotated, radius-normalized* frame — the
 frame in which the ellipsoid is a unit sphere — so that sector geometry and
 anisotropy can never disagree.
 
@@ -39,7 +39,7 @@ struct Octants <: SectorScheme end
     Azimuthal(n; halves=false)
 
 Divide into `n` wedges by azimuth around the principal axis, measured in the
-normalised local frame. Any `n ≥ 2` is allowed.
+normalized local frame. Any `n ≥ 2` is allowed.
 
 In 3D the wedges are vertical: a sample directly above the block lands in the
 wedge its horizontal projection falls into. Pass `halves=true` to additionally
@@ -71,10 +71,10 @@ nsectors(s::Azimuthal, dim::Int) = (s.halves && dim == 3) ? 2s.n : s.n
 """
     sectorid(scheme, u)
 
-Sector of the normalised local coordinates `u`, as an integer in
+Sector of the normalized local coordinates `u`, as an integer in
 `1:nsectors(scheme, length(u))`.
 
-A sample lying exactly on the block centre has no direction; it is assigned to
+A sample lying exactly on the block center has no direction; it is assigned to
 sector 1.
 """
 sectorid(::NoSectors, u::AbstractVector) = 1

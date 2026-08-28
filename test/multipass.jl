@@ -14,11 +14,11 @@
     @test MultiPass([tight, medium]) isa MultiPass
 
     @test_throws ArgumentError MultiPass(())
-    @test_throws ArgumentError MultiPass((tight, "not a neighbourhood"))
+    @test_throws ArgumentError MultiPass((tight, "not a neighborhood"))
     @test_throws ArgumentError MultiPass(tight, SearchNeighborhood((10, 10)))
   end
 
-  @testset "expanding a base neighbourhood" begin
+  @testset "expanding a base neighborhood" begin
     m = MultiPass(tight, (1, 2, 4))
     @test length(m) == 3
     @test m[1].radii == tight.radii
@@ -58,7 +58,7 @@
     @test r.pass == 3
   end
 
-  @testset "a single pass behaves like the neighbourhood itself" begin
+  @testset "a single pass behaves like the neighborhood itself" begin
     one = NeighborhoodSearch(data, MultiPass(medium))
     bare = NeighborhoodSearch(data, medium)
     p = Point(3.0, 2.0, 0.0)

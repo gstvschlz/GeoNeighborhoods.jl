@@ -93,11 +93,11 @@
     @test all(≤(2), values(_counts(secs)))
   end
 
-  @testset "distances are sorted and normalised" begin
+  @testset "distances are sorted and normalized" begin
     m = NeighborhoodSearch(data, SearchNeighborhood((95, 95, 62), maxsamples=10))
     dists = searchreport(origin, m).distances
     @test issorted(dists)
-    # normalised: 1.0 is the ellipsoid surface, so everything accepted is inside
+    # normalized: 1.0 is the ellipsoid surface, so everything accepted is inside
     @test all(d -> ustrip(d) ≤ 1, dists)
   end
 
@@ -191,7 +191,7 @@
   end
 
   @testset "construction errors" begin
-    # a 2D neighbourhood cannot search 3D data
+    # a 2D neighborhood cannot search 3D data
     @test_throws ArgumentError NeighborhoodSearch(data, SearchNeighborhood((10, 10)))
     # category rules need a table
     @test_throws ArgumentError NeighborhoodSearch(

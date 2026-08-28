@@ -20,7 +20,7 @@
     @test sectorid(Octants(), SVector(1.0, -1.0, 1.0)) == 3
     @test sectorid(Octants(), SVector(-1.0, -1.0, -1.0)) == 8
 
-    # the centre has no direction
+    # the center has no direction
     @test sectorid(Octants(), SVector(0.0, 0.0, 0.0)) == 1
 
     # 2D quadrants

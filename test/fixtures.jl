@@ -1,5 +1,5 @@
 # The synthetic drillhole data is defined alongside the examples so that the
-# documented numbers and the tested behaviour come from one dataset.
+# documented numbers and the tested behavior come from one dataset.
 include(joinpath(@__DIR__, "..", "examples", "drillholes.jl"))
 
 "count of accepted samples per value of `column`"

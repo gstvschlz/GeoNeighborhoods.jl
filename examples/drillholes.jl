@@ -5,11 +5,11 @@ using Meshes: Point, PointSet
     drillholes(; ngrid=5, spacing=45.0, composite=4.0, halfheight=76.0)
 
 Synthetic composites from a `ngrid × ngrid` grid of vertical holes on `spacing`
-centres, sampled every `composite` metres. Down-hole sampling is an order of
+centers, sampled every `composite` meters. Down-hole sampling is an order of
 magnitude denser than the spacing between holes, which is the ordinary case and
 the reason a plain nearest-N search degenerates.
 
-The grid is offset a few metres off the axes so that no collar sits exactly on
+The grid is offset a few meters off the axes so that no collar sits exactly on
 `x = 0` or `y = 0`: a coordinate of exactly zero always counts as positive, so
 collars on an axis would make sign-based octants degenerate. One hole passes
 within 4 m of the origin.

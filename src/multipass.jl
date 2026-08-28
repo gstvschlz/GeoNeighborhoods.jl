@@ -4,7 +4,7 @@
     MultiPass(base, factors; minsamples=nothing)
 
 An ordered sequence of [`SearchNeighborhood`](@ref)s. Each pass is a complete
-neighbourhood in its own right, not merely a wider radius: it carries its own
+neighborhood in its own right, not merely a wider radius: it carries its own
 sectors, quotas and rejection rules.
 
 The first pass whose constraints are satisfied wins, and the report says which
@@ -12,10 +12,10 @@ one that was. A location no pass can inform is left uninterpolated.
 
 Passes are tried in the order given — put the tightest first.
 
-## Expanding a base neighbourhood
+## Expanding a base neighborhood
 
 `MultiPass(base, factors)` scales `base` by each factor in turn, which covers
-the common case of relaxing the same neighbourhood outwards. Pass `minsamples`
+the common case of relaxing the same neighborhood outwards. Pass `minsamples`
 to relax the sample floor alongside the radii:
 
 ```julia

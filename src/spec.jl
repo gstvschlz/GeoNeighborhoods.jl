@@ -13,7 +13,7 @@ data with [`NeighborhoodSearch`](@ref) to actually search.
 ## Geometry
 
 - `radii` — semi-axes of the ellipsoid, as a 2- or 3-tuple. Plain numbers are
-  interpreted as metres; `Unitful` lengths are taken as given.
+  interpreted as meters; `Unitful` lengths are taken as given.
 - `rotation` — orientation of the ellipsoid. Accepts `I` (axis-aligned, the
   default), any rotation from Rotations.jl, or a mining convention from
   GeoStatsBase.jl such as `GslibAngles`, `DatamineAngles`, `VulcanAngles` or
@@ -128,14 +128,14 @@ _aslen(x::Number) = float(x) * u"m"
 """
     ndims(spec)
 
-Spatial dimension the neighbourhood is defined in — 2 or 3.
+Spatial dimension the neighborhood is defined in — 2 or 3.
 """
 Base.ndims(::SearchNeighborhood{Dim}) where {Dim} = Dim
 
 """
     nsectors(spec)
 
-Number of sectors the neighbourhood divides into.
+Number of sectors the neighborhood divides into.
 """
 nsectors(s::SearchNeighborhood) = nsectors(s.sectors, ndims(s))
 
@@ -150,8 +150,8 @@ metricball(s::SearchNeighborhood) = MetricBall(s.radii, s.rotation)
 """
     localprojection(spec, unit)
 
-Matrix mapping a world-space offset from the block centre, expressed in `unit`,
-to normalised local coordinates: rotated into the ellipsoid frame and divided by
+Matrix mapping a world-space offset from the block center, expressed in `unit`,
+to normalized local coordinates: rotated into the ellipsoid frame and divided by
 the radii. The ellipsoid interior is then exactly the unit ball, so `norm(u) ≤ 1`
 tests membership and `u` feeds sector assignment directly.
 """
@@ -168,7 +168,7 @@ _rotmatrix(R::AbstractMatrix, ::Val{Dim}) where {Dim} = SMatrix{Dim,Dim}(R)
     scale(spec, factor)
 
 Scale the ellipsoid radii by a strictly positive `factor`, leaving every other
-parameter untouched. Used to rescale a neighbourhood alongside the data for
+parameter untouched. Used to rescale a neighborhood alongside the data for
 numerical stability, and to build the passes of a [`MultiPass`](@ref).
 """
 function scale(s::SearchNeighborhood, factor::Real)
