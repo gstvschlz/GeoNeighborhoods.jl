@@ -19,8 +19,8 @@ uninterpolated.
 !!! note "Hard domain matching"
     A `CategoryRule` with `match=:block` needs the value of the location being
     estimated, which the plain `Meshes` search interface has no way to pass.
-    Use [`searchreport!`](@ref) with `blockvals`, or [`interpolate`](@ref),
-    which supplies them from the target geotable.
+    Use [`searchreport!`](@ref) with `blockvals=(; COLUMN=value)`, or
+    [`interpolate`](@ref), which supplies them from the target geotable.
 """
 struct NeighborhoodSearch{Dim,T,C<:CRS,S<:SearchNeighborhood,TR,P,V,U} <: BoundedNeighborSearchMethod
   spec::S
@@ -101,9 +101,10 @@ describing how the search ended:
 `nsectors` and `ndistinct` describe what was assembled even when a rule then
 rejected it, which is what makes a refusal explainable.
 
-`blockvals` supplies the estimated location's own category values, as a tuple
-aligned with the specification's `category` rules. It is required when any rule
-uses `match=:block`.
+`blockvals` supplies the estimated location's own category values, keyed by
+column name — for example `(; ROCK="WEST")`. It is required when any rule uses
+`match=:block`. Keying by name rather than position means the passes of a
+[`MultiPass`](@ref) may carry different rules.
 """
 function searchreport!(
   neighbors,
@@ -209,13 +210,14 @@ _emptytallies(catvals) = map(v -> Dict{eltype(v),Int}(), catvals)
 function _matchesblock(m, s, i, blockvals)
   @inbounds for (r, rule) in enumerate(s.category)
     rule.matchblock || continue
-    isnothing(blockvals) && throw(
+    (isnothing(blockvals) || !haskey(blockvals, rule.column)) && throw(
       ArgumentError(
         "CategoryRule on :$(rule.column) uses match=:block, which needs the " *
-        "estimated location's own value; pass blockvals, or use interpolate"
+        "estimated location's own value; pass blockvals=(; $(rule.column)=…), " *
+        "or use interpolate with a geotable target"
       )
     )
-    m.catvals[r][i] == blockvals[r] || return false
+    m.catvals[r][i] == blockvals[rule.column] || return false
   end
   true
 end

@@ -159,11 +159,11 @@
     # the block's own value has to come from somewhere
     @test_throws ArgumentError searchreport(origin, m)
 
-    r = searchreport(origin, m; blockvals=("WEST",))
+    r = searchreport(origin, m; blockvals=(; ROCK="WEST"))
     @test r.reason == Neighborhoods.Accepted
     @test all(==("WEST"), keys(tally(data, r.indices, :ROCK)))
 
-    r = searchreport(origin, m; blockvals=("EAST",))
+    r = searchreport(origin, m; blockvals=(; ROCK="EAST"))
     @test all(==("EAST"), keys(tally(data, r.indices, :ROCK)))
   end
 
