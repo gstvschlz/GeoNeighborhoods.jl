@@ -1,4 +1,7 @@
-# Neighborhoods.jl
+# GeoNeighborhoods.jl
+
+[![CI](https://github.com/gstvschlz/GeoNeighborhoods.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/gstvschlz/GeoNeighborhoods.jl/actions/workflows/CI.yml)
+[![codecov](https://codecov.io/gh/gstvschlz/GeoNeighborhoods.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/gstvschlz/GeoNeighborhoods.jl)
 
 Mining-style search neighbourhoods for the [GeoStats.jl](https://github.com/JuliaEarth/GeoStats.jl)
 ecosystem — anisotropic ellipsoids, angular sectors, sample quotas per sector
@@ -60,7 +63,7 @@ into anything else in the ecosystem that accepts a searcher.
 ## Defining a neighbourhood
 
 ```julia
-using Neighborhoods
+using GeoNeighborhoods
 using GeoStatsBase: GslibAngles
 
 search = SearchNeighborhood(
@@ -161,7 +164,7 @@ not estimated: 208
 Not yet registered.
 
 ```julia
-using Pkg; Pkg.add(url="https://github.com/gstvschlz/Neighborhoods.jl")
+using Pkg; Pkg.add(url="https://github.com/gstvschlz/GeoNeighborhoods.jl")
 ```
 
 ## Development

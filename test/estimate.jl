@@ -60,8 +60,8 @@
     reject = getproperty(tab, :reject)
     nsamples = getproperty(tab, :nsamples)
 
-    @test all(ismissing.(au) .== (reject .≠ Neighborhoods.Accepted))
-    @test all(nsamples[reject .≠ Neighborhoods.Accepted] .== 0)
+    @test all(ismissing.(au) .== (reject .≠ GeoNeighborhoods.Accepted))
+    @test all(nsamples[reject .≠ GeoNeighborhoods.Accepted] .== 0)
     @test any(ismissing, au)              # the rule really does bite
   end
 

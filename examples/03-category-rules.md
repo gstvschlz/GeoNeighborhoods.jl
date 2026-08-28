@@ -5,7 +5,7 @@ id, a domain code, a weathering zone. Four kinds of constraint are
 available, and they compose.
 
 ```julia
-using Neighborhoods
+using GeoNeighborhoods
 using Meshes: Point
 
 samples = drillholes()

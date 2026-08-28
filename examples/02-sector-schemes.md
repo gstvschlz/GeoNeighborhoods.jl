@@ -7,7 +7,7 @@ therefore cannot disagree: rotating the search rotates the sectors with it.
 Three schemes are available, and the choice matters more than it looks.
 
 ```julia
-using Neighborhoods
+using GeoNeighborhoods
 using Meshes: Point
 
 samples = drillholes()
@@ -102,7 +102,7 @@ using LinearAlgebra: norm
 
 for angle in (0, 30, 60)
   spec = SearchNeighborhood((100, 40, 20), rotation=RotZ(deg2rad(angle)), sectors=Octants())
-  P = Neighborhoods.localprojection(spec, u"m")
+  P = GeoNeighborhoods.localprojection(spec, u"m")
   along = RotZ(deg2rad(angle)) * SVector(60.0, 0.0, 0.0)
   println("rotation ", lpad(angle, 2), "°: octant ", sectorid(Octants(), P * along),
     ", normalised distance ", fmt(norm(P * along)))

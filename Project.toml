@@ -1,4 +1,4 @@
-name = "Neighborhoods"
+name = "GeoNeighborhoods"
 uuid = "3892b69f-dacf-49f0-8e11-8ce0c1a093e5"
 authors = ["Gustavo Pretto Scholze <scholzegustavo@gmail.com>"]
 version = "0.1.0-DEV"

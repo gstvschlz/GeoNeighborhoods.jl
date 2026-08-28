@@ -5,7 +5,7 @@
 #md that package works, and the numbers agree with the ecosystem's own
 #md `fitpredict` whenever the neighbourhood is not doing anything extra.
 
-using Neighborhoods
+using GeoNeighborhoods
 using GeoStatsModels: GeoStatsModels, Kriging
 using GeoStatsFunctions: SphericalVariogram
 using GeoTables: georef, domain

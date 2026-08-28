@@ -1,4 +1,4 @@
-using Neighborhoods
+using GeoNeighborhoods
 using StaticArrays
 using LinearAlgebra: norm
 using Unitful: @u_str, ustrip
@@ -14,11 +14,11 @@ import Tables
 using Test
 
 # internals under test that are deliberately not exported
-using Neighborhoods: sectorgroups, consecutiveempty, side, cap, satisfied, localprojection
+using GeoNeighborhoods: sectorgroups, consecutiveempty, side, cap, satisfied, localprojection
 
 include("fixtures.jl")
 
-@testset "Neighborhoods.jl" begin
+@testset "GeoNeighborhoods.jl" begin
   include("sectors.jl")
   include("constraints.jl")
   include("spec.jl")

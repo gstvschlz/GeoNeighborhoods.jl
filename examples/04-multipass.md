@@ -8,7 +8,7 @@ rejection rules. The first one whose constraints hold wins, and the output
 records which.
 
 ```julia
-using Neighborhoods
+using GeoNeighborhoods
 using Meshes: CartesianGrid, nelements
 
 samples = drillholes()

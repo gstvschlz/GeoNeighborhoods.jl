@@ -7,8 +7,8 @@
     @test nsectors(s) == 1
     @test s.minsamples == 1
     @test s.maxsamples == 24
-    @test s.maxpersector == Neighborhoods.UNBOUNDED
-    @test s.maxemptyconsecutive == Neighborhoods.UNBOUNDED
+    @test s.maxpersector == GeoNeighborhoods.UNBOUNDED
+    @test s.maxemptyconsecutive == GeoNeighborhoods.UNBOUNDED
     @test isnothing(s.split)
     @test isempty(s.category)
 
@@ -87,12 +87,12 @@
 
   @testset "scale" begin
     s = SearchNeighborhood((100, 50, 20), sectors=Octants(), maxpersector=3)
-    t = Neighborhoods.scale(s, 2)
+    t = GeoNeighborhoods.scale(s, 2)
     @test t.radii == (200.0u"m", 100.0u"m", 40.0u"m")
     @test t.sectors === s.sectors
     @test t.maxpersector == s.maxpersector
-    @test_throws ArgumentError Neighborhoods.scale(s, 0)
-    @test_throws ArgumentError Neighborhoods.scale(s, -1)
+    @test_throws ArgumentError GeoNeighborhoods.scale(s, 0)
+    @test_throws ArgumentError GeoNeighborhoods.scale(s, -1)
   end
 
   @testset "show" begin

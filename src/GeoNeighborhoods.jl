@@ -1,5 +1,5 @@
 """
-    Neighborhoods
+    GeoNeighborhoods
 
 Mining-style search neighborhoods for the GeoStats.jl ecosystem:
 anisotropic ellipsoids with angular sectors, per-sector and
@@ -13,7 +13,7 @@ replacing it.
 !!! warning "Pre-release"
     Under active implementation; the public API is still settling.
 """
-module Neighborhoods
+module GeoNeighborhoods
 
 using Meshes: MetricBall, metric, BoundedNeighborSearchMethod, Point, PointSet, Domain
 using Meshes: centroid, nelements, crs, lentype, embeddim, coords

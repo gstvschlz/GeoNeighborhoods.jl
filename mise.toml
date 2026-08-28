@@ -14,7 +14,7 @@ run = "julia --project=. -e 'using Pkg; Pkg.instantiate()'"
 
 [tasks.repl]
 description = "Start a REPL with the package environment"
-run = "julia --project=. -i -e 'using Neighborhoods'"
+run = "julia --project=. -i -e 'using GeoNeighborhoods'"
 
 [tasks.fmt]
 description = "Format sources with JuliaFormatter"

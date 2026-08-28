@@ -6,7 +6,7 @@ that package works, and the numbers agree with the ecosystem's own
 `fitpredict` whenever the neighbourhood is not doing anything extra.
 
 ```julia
-using Neighborhoods
+using GeoNeighborhoods
 using GeoStatsModels: GeoStatsModels, Kriging
 using GeoStatsFunctions: SphericalVariogram
 using GeoTables: georef, domain

@@ -41,20 +41,20 @@
 
     # a location on a hole is served by the tightest pass
     r = searchreport(Point(3.0, 2.0, 0.0), m)
-    @test r.reason == Neighborhoods.Accepted
+    @test r.reason == GeoNeighborhoods.Accepted
     @test r.pass == 1
     @test length(r.indices) ≥ 8
 
     # midway between four collars, out of reach of pass 1
     r = searchreport(Point(25.5, 24.5, 0.0), m)
-    @test r.reason == Neighborhoods.Accepted
+    @test r.reason == GeoNeighborhoods.Accepted
     @test r.pass == 2
     @test length(r.indices) ≥ 5
 
     # beyond every pass: reported against the widest one
     r = searchreport(Point(5000.0, 5000.0, 0.0), m)
     @test isempty(r.indices)
-    @test r.reason == Neighborhoods.NoCandidates
+    @test r.reason == GeoNeighborhoods.NoCandidates
     @test r.pass == 3
   end
 
@@ -71,7 +71,7 @@
     strict = SearchNeighborhood((30, 30, 30), sectors=Octants(), minsectors=8)
     m = NeighborhoodSearch(data, MultiPass(strict, medium))
     r = searchreport(Point(3.0, 2.0, 0.0), m)
-    @test r.reason == Neighborhoods.Accepted
+    @test r.reason == GeoNeighborhoods.Accepted
     @test r.pass == 2
   end
 end

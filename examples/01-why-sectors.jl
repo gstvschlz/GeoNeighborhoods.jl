@@ -10,7 +10,7 @@
 #md every 4 m, defined in [`drillholes.jl`](drillholes.jl). One hole passes
 #md within 4 m of the origin, which is where we estimate.
 
-using Neighborhoods
+using GeoNeighborhoods
 using Meshes: Point
 
 samples = drillholes()

@@ -4,7 +4,7 @@
 #md id, a domain code, a weathering zone. Four kinds of constraint are
 #md available, and they compose.
 
-using Neighborhoods
+using GeoNeighborhoods
 using Meshes: Point
 
 samples = drillholes()

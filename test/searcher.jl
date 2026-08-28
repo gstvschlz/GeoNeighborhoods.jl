@@ -11,7 +11,7 @@
 
     r = searchreport(origin, ours)
     want, wantd = searchdists(origin, theirs)
-    @test r.reason == Neighborhoods.Accepted
+    @test r.reason == GeoNeighborhoods.Accepted
     @test r.pass == 1
     @test length(r.indices) == length(want)
 
@@ -42,7 +42,7 @@
       )
     )
     r = searchreport(origin, spread)
-    @test r.reason == Neighborhoods.Accepted
+    @test r.reason == GeoNeighborhoods.Accepted
     @test length(r.indices) == 12
 
     holes = tally(data, r.indices, :BHID)
@@ -111,13 +111,13 @@
       far
     )
     @test rep.n == 0
-    @test rep.reason == Neighborhoods.NoCandidates
+    @test rep.reason == GeoNeighborhoods.NoCandidates
 
     # samples exist, but not enough of them
     few = NeighborhoodSearch(data, SearchNeighborhood((10, 10, 10), minsamples=50, maxsamples=60))
     r = searchreport(origin, few)
     @test isempty(r.indices)
-    @test r.reason == Neighborhoods.TooFewSamples
+    @test r.reason == GeoNeighborhoods.TooFewSamples
 
     # too few distinct sectors filled: a ball reaching only the nearest hole
     # can populate just the two octants above and below it
@@ -126,7 +126,7 @@
     )
     r = searchreport(origin, sect)
     @test isempty(r.indices)
-    @test r.reason == Neighborhoods.TooFewSectors
+    @test r.reason == GeoNeighborhoods.TooFewSectors
 
     # a run of empty sectors around the block
     run = NeighborhoodSearch(
@@ -134,14 +134,14 @@
     )
     r = searchreport(origin, run)
     @test isempty(r.indices)
-    @test r.reason == Neighborhoods.EmptySectorRun
+    @test r.reason == GeoNeighborhoods.EmptySectorRun
 
     # one side of the plane empty: search above the highest composite so that
     # every sample in reach lies below it
     split = NeighborhoodSearch(data, SearchNeighborhood((30, 30, 30), split=HalfSpace((0, 0, 1))))
     r = searchreport(Point(3.0, 2.0, 92.0), split)
     @test isempty(r.indices)
-    @test r.reason == Neighborhoods.HalfSpaceEmpty
+    @test r.reason == GeoNeighborhoods.HalfSpaceEmpty
 
     # a category minimum the data cannot meet
     lonely = NeighborhoodSearch(
@@ -149,7 +149,7 @@
     )
     r = searchreport(origin, lonely)
     @test isempty(r.indices)
-    @test r.reason == Neighborhoods.CategoryUnmet
+    @test r.reason == GeoNeighborhoods.CategoryUnmet
   end
 
   @testset "hard domain matching" begin
@@ -160,7 +160,7 @@
     @test_throws ArgumentError searchreport(origin, m)
 
     r = searchreport(origin, m; blockvals=(; ROCK="WEST"))
-    @test r.reason == Neighborhoods.Accepted
+    @test r.reason == GeoNeighborhoods.Accepted
     @test all(==("WEST"), keys(tally(data, r.indices, :ROCK)))
 
     r = searchreport(origin, m; blockvals=(; ROCK="EAST"))
@@ -181,7 +181,7 @@
     # a rejected search still explains what it managed to gather
     strict = SearchNeighborhood((30, 30, 30), sectors=Octants(), minsectors=8)
     r = searchreport(origin, NeighborhoodSearch(data, strict))
-    @test r.reason == Neighborhoods.TooFewSectors
+    @test r.reason == GeoNeighborhoods.TooFewSectors
     @test isempty(r.indices)
     @test 0 < r.nsectors < 8
 
