@@ -19,9 +19,9 @@ replacing it.
 """
 module Neighborhoods
 
-using Meshes: MetricBall, metric, BoundedNeighborSearchMethod, Point, Domain
+using Meshes: MetricBall, metric, BoundedNeighborSearchMethod, Point, PointSet, Domain
 using Meshes: centroid, nelements, crs, lentype, embeddim, coords
-using GeoTables: domain
+using GeoTables: domain, georef
 import Meshes: maxneighbors, searchdists!
 
 using CoordRefSystems: CRS
@@ -29,6 +29,7 @@ import CoordRefSystems
 
 using NearestNeighbors: BallTree, inrange
 import Tables
+import GeoStatsModels
 
 using StaticArrays: SVector, SMatrix
 using LinearAlgebra: I, UniformScaling, Diagonal, norm
@@ -39,6 +40,7 @@ include("constraints.jl")
 include("spec.jl")
 include("searcher.jl")
 include("multipass.jl")
+include("estimate.jl")
 
 export
   # sector schemes
@@ -63,6 +65,9 @@ export
   MultiPass,
   MultiPassSearch,
   searchreport,
-  searchreport!
+  searchreport!,
+
+  # estimation
+  interpolate
 
 end
