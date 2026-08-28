@@ -15,19 +15,22 @@ so it composes with the existing estimation machinery instead of
 replacing it.
 
 !!! warning "Pre-release"
-    The design is settled (see `docs/superpowers/specs/`) but the
-    implementation has not landed yet. The API below is the target.
+    Under active implementation, following the design in
+    `docs/superpowers/specs/2026-08-28-neighborhoods-jl-design.md`.
 """
 module Neighborhoods
 
-# Design settled 2026-08-28. Implementation follows the plan in
-# docs/superpowers/specs/2026-08-28-neighborhoods-jl-design.md
-#
-#   sectors.jl      Octants / Azimuthal sector assignment
-#   constraints.jl  category quotas, half-space split, rejection rules
-#   spec.jl         SearchNeighborhood
-#   searcher.jl     NeighborhoodSearch <: BoundedNeighborSearchMethod
-#   multipass.jl    MultiPass driver
-#   estimate.jl     prediction loop + TableTransform
+include("sectors.jl")
+
+export
+  # sector schemes
+  SectorScheme,
+  NoSectors,
+  Octants,
+  Azimuthal,
+  nsectors,
+  sectorid,
+  sectorgroups,
+  consecutiveempty
 
 end
