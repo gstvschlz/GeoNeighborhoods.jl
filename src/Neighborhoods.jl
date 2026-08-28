@@ -38,6 +38,7 @@ include("sectors.jl")
 include("constraints.jl")
 include("spec.jl")
 include("searcher.jl")
+include("multipass.jl")
 
 export
   # sector schemes
@@ -59,6 +60,8 @@ export
 
   # search
   NeighborhoodSearch,
+  MultiPass,
+  MultiPassSearch,
   searchreport,
   searchreport!
 

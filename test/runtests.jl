@@ -4,7 +4,7 @@ using LinearAlgebra: norm
 using Unitful: @u_str, ustrip
 using Rotations: RotZ
 using Distances: evaluate
-using Meshes: metric, Point, PointSet, KBallSearch, search, searchdists, centroid, coords
+using Meshes: metric, maxneighbors, Point, PointSet, KBallSearch, search, searchdists, centroid, coords
 using GeoTables: georef, domain
 using CoordRefSystems: CoordRefSystems
 import Tables
@@ -20,4 +20,5 @@ include("fixtures.jl")
   include("constraints.jl")
   include("spec.jl")
   include("searcher.jl")
+  include("multipass.jl")
 end
