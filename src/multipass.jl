@@ -1,7 +1,3 @@
-# ------------------------------------------------------------------
-# Licensed under the MIT License. See LICENSE in the project root.
-# ------------------------------------------------------------------
-
 """
     MultiPass(pass₁, pass₂, ...)
     MultiPass(passes)

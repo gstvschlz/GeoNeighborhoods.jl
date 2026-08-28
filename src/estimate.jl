@@ -1,7 +1,3 @@
-# ------------------------------------------------------------------
-# Licensed under the MIT License. See LICENSE in the project root.
-# ------------------------------------------------------------------
-
 const DIAGNOSTICS = (:pass, :nsamples, :nsectors, :ndistinct, :reject)
 
 """
